@@ -22,4 +22,4 @@ jobs:
             cd ~/demo-customer
             git pull origin main
             # Restart container để cập nhật nội dung mới từ thư mục demo/
-            docker-compose up -d --force-recreate
+            docker compose up -d --force-recreate
