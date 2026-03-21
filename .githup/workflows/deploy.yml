@@ -1,0 +1,25 @@
+name: Auto Deploy Demo Site
+
+on:
+  push:
+    branches:
+      - main  # Chạy khi bạn push code vào nhánh main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Deploy to Server via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: 150.95.111.4
+          username: deploy
+          key: ${{ secrets.SERVER_SSH_KEY }} # Bạn cần tạo Secret này trên GitHub
+          script: |
+            cd ~/demo-customer
+            git pull origin main
+            # Restart container để cập nhật nội dung mới từ thư mục demo/
+            docker-compose up -d --force-recreate

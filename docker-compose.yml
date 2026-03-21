@@ -1,0 +1,25 @@
+version: "3.9"
+
+services:
+  demo:
+    image: nginx:1.29.3-alpine
+    container_name: demo-site
+    restart: always
+    volumes:
+      - ./demo:/usr/share/nginx/html:ro  # :ro để chỉ cho phép đọc (bảo mật hơn)
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      # Điều hướng tên miền
+      - "traefik.http.routers.demo-router.rule=Host(`demo.webtop.vn`)"
+      - "traefik.http.routers.demo-router.entrypoints=websecure"
+      - "traefik.http.routers.demo-router.tls.certresolver=myresolver"
+      
+      # Quan trọng: Sửa lỗi 502 bằng cách chỉ định đúng cổng và mạng nội bộ
+      - "traefik.http.services.demo-service.loadbalancer.server.port=80"
+      - "traefik.docker.network=web"
+
+networks:
+  web:
+    external: true
